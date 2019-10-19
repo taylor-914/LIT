@@ -2,11 +2,15 @@ import React from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import Button from '@material-ui/core/Button'
+import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Slider from '@material-ui/core/Slider'
 import Grid from '@material-ui/core/Grid'
+import InputLabel from '@material-ui/core/InputLabel';
 
 import styles from'./DynamicCharts.module.css'
 
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
 
 export default class DynamicCharts extends React.Component {
 
@@ -19,13 +23,22 @@ export default class DynamicCharts extends React.Component {
                 3: 0.075},
         options: {
             title: {
-            text: 'Mr.Money Bags'
+            text: 'Ten Year Portfolio Simulator'
+            },
+            line: {
+                color:'#4c8c2b'
             },
             xAxis: {
-                text: 'Years'
+                title: {
+                    text: 'Years'
+                },
+                tickInterval: 2,
+
             },
             yAxis: {
-                text: 'Investment Value ($)',
+                title: {
+                    text: 'Investment Value ($)'
+                },
                 max: 30000
             },
             legend: {
@@ -37,10 +50,16 @@ export default class DynamicCharts extends React.Component {
             data: []
             }],
             plotOptions:{
+                // colorsAxis:{
+                //     lineColor: '#4c8c2b'
+                // // } ['#4c8c2b', '#4a7724'],
+                // },
                 area:{
                     marker: {
                         radius: 2
-                    }
+                    },
+                    fillColor: 'rgba(76, 140, 43, 0.5)',
+                    color: 'rgb(76, 140, 43)'
                 }
             }
       }
@@ -51,6 +70,8 @@ export default class DynamicCharts extends React.Component {
     }
 
     resampleData(){
+        console.log(`Return: ${this.state.return}`)
+        console.log(`Risk: ${this.state.vol}`)
         const data = this.generateData();
         const newOptions = {...this.state.options}
         newOptions.series[0].data = data;
@@ -61,7 +82,7 @@ export default class DynamicCharts extends React.Component {
         return this.state.risk[this.state.vol]
     }
 
-    generateData(length = 120, initialInvestment = 10000) {
+    generateData(length = 121, initialInvestment = 10000) {
 
         function random_bm(ret, vol){
             //Box-Muller transform
@@ -89,86 +110,93 @@ export default class DynamicCharts extends React.Component {
             }
         },0);
 
-        return time.map((value, ind) => [value, Math.round(initialInvestment * (1 + monthlyReturnCumSum[ind]))])
+        return time.map((value, ind) => [value/12, Math.round(initialInvestment * (1 + monthlyReturnCumSum[ind]))])
     }
 
     handleReturnChange(event, value){
         if (this.state.return !== value){
-            this.setState({return: value})
-            this.resampleData()
+            this.setState({return: value}, this.resampleData)
         }
     }
 
     handleRiskChange(event, value){
         if (this.state.vol !== value){
-            this.setState({vol: value})
-            this.resampleData()
+            this.setState({vol: value}, this.resampleData)
         }
     }
 
-    conservativeSelected() {
-        this.setState({vol: 1, return: 4})
-        this.resampleData()
+    portfolioSelected(vol, ret) {
+        this.setState({vol: vol, return: ret}, this.resampleData)
     }
 
-    balancedSelected() {
-        this.setState({vol: 2, return: 10})
-        this.resampleData()
+
+    riskSelector(value) {
+        this.setState({vol: value}, this.resampleData)
     }
 
-    growthSelected() {
-        this.setState({vol: 3, return: 16})
-        this.resampleData()
-    }
 
 
     render(){
+
+        const theme = createMuiTheme({
+            palette: {
+              primary: {
+                // light: will be calculated from palette.primary.main,
+                main: 'rgb(76, 140, 43)',
+                // dark: will be calculated from palette.primary.main,
+                // contrastText: will be calculated to contrast with palette.primary.main
+              },
+              secondary: {
+                light: '#0066ff',
+                main: '#0044ff',
+                // dark: will be calculated from palette.secondary.main,
+                contrastText: '#ffcc00',
+              },
+              // error: will use the default color
+            },
+          });
+          
+
         return (  
             <div className={styles.graph}>
                 <HighchartsReact
                 highcharts={Highcharts}
                 options={this.state.options}
                 />
-                <Slider key="Risk"
-                        className={styles.slider}
-                        valueLabelDisplay='on' 
-                        step={1}
-                        min={0}
-                        max={20}
-                        // defaultValue={8}
-                        value={this.state.return}
-                        onChange={this.handleReturnChange.bind(this)}
-                />
-                <Slider className={styles.slider}
-                        valueLabelDisplay='on' 
-                        step={1}
-                        min={1}
-                        max={3}
-                        // defaultValue={2}
-                        value={this.state.vol}
-                        marks={['Low', 'Medium', 'High']}
-                        onChange={this.handleRiskChange.bind(this)}
-                />
-                <Grid 
-                    container
-                    direction="row-reverse"
-                    justify="space-around">   
-                    <Button variant="contained" 
-                            color="primary"
-                            onClick={this.conservativeSelected.bind(this)}>
-                        Conservative
-                    </Button>
-                    <Button variant="contained" 
-                            color="primary"
-                            onClick={this.balancedSelected.bind(this)}>
-                        Balanced
-                    </Button>
-                    <Button variant="contained" 
-                            color="primary"
-                            onClick={this.growthSelected.bind(this)}>
-                        Growth
-                    </Button>
-                </Grid>
+                <InputLabel>Average Annual Return (%)</InputLabel>
+                <ThemeProvider theme={theme}>
+                    <Slider className={styles.slider}
+                            aria-label="Expected Annual Return (%)"
+                            label="Expected Annual Return (%)"
+                            aria-valuetext="Expected Annual Return (%)"
+                            valueLabelDisplay='on' 
+                            step={1}
+                            min={0}
+                            max={14}
+                            value={this.state.return}
+                            onChange={this.handleReturnChange.bind(this)}
+                    />
+                    <Grid 
+                        container
+                        direction="row"
+                        justify="space-around">   
+                            <Button variant="contained" 
+                                    color="primary"
+                                    onClick={() => this.portfolioSelected(1, 4)}>
+                                Conservative
+                            </Button>
+                            <Button variant="contained" 
+                                    color="primary"
+                                    onClick={() => this.portfolioSelected(2, 7)}>
+                                Balanced
+                            </Button>
+                            <Button variant="contained" 
+                                    color="primary"
+                                    onClick={() => this.portfolioSelected(3, 10)}>
+                                Growth
+                            </Button>
+                    </Grid>
+                </ThemeProvider>
             </div>
         )
     }

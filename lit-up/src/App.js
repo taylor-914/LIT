@@ -16,7 +16,6 @@ function App() {
         <Gallery />
         <CourseSelector />
         <DynamicChart />
-        <Button variant="contained" color="primary">Hello Tyler</Button>
     </div>
   );
 }

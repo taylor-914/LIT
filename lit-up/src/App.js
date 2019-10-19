@@ -1,24 +1,36 @@
 import React from 'react';
 import logo from './logo.svg';
+import Button from '@material-ui/core/Button'
+import Highcharts from 'highcharts'
+import HighchartsReact from 'highcharts-react-official'
+
+import Navigation from './Navigation/Navigation'
+import Gallery from './Gallery/Gallery'
+import DynamicChart from './DynamicChart/DynamicChart'
 import './App.css';
+
+const options = {
+  title: {
+    text: 'My chart'
+  },
+  series: [{
+    data: [1, 2, 3]
+  }]
+}
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <Navigation />
+        <Gallery />
+        <DynamicChart />
+        <Button variant="contained" color="primary">Hello Tyler</Button>
+
+        <HighchartsReact
+          highcharts={Highcharts}
+          options={options}
+        />
     </div>
   );
 }

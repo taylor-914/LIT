@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button'
 import Navigation from './Navigation/Navigation'
 import Gallery from './Gallery/Gallery'
 import DynamicChart from './DynamicChart/DynamicChart'
+import CourseSelector from './CourseSelector/CourseSelector'
 import './App.css';
 
 
@@ -13,6 +14,7 @@ function App() {
     <div className="App">
         <Navigation />
         <Gallery />
+        <CourseSelector />
         <DynamicChart />
         <Button variant="contained" color="primary">Hello Tyler</Button>
     </div>

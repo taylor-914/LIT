@@ -159,10 +159,18 @@ export default class DynamicCharts extends React.Component {
 
         return (  
             <div className={styles.graph}>
-                <HighchartsReact
-                highcharts={Highcharts}
-                options={this.state.options}
-                />
+                <Grid 
+                    container
+                    direction="row"
+                    justify="space-around"
+                    alignItems="stretch"> 
+                    <Grid item xs>
+                        <HighchartsReact
+                        highcharts={Highcharts}
+                        options={this.state.options}
+                        />
+                    </Grid>
+                </Grid>
                 <InputLabel>Average Annual Return (%)</InputLabel>
                 <ThemeProvider theme={theme}>
                     <Slider className={styles.slider}

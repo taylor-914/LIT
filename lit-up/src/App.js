@@ -29,7 +29,7 @@ function App() {
             <Grid item xs={3}>
               <p>Aggressive growth leads to higher volatility but typically increases growth long-term.</p>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item sm>
               <div className={style.margin}>
                 <DynamicChart />
               </div>

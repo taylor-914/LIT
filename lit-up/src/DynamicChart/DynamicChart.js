@@ -23,7 +23,7 @@ export default class DynamicCharts extends React.Component {
                 3: 0.075},
         options: {
             title: {
-            text: 'Ten Year Portfolio Simulator'
+            text: 'Stock Market Simulator'
             },
             line: {
                 color:'#4c8c2b'

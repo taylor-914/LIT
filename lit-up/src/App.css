@@ -2,13 +2,9 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-}
-
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 120vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,4 +15,8 @@
 
 .App-link {
   color: #09d3ac;
+}
+
+p {
+  margin: 20px;
 }
